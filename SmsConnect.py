@@ -32,7 +32,7 @@ class SmsConnect:
         Reads the login data (username, apikey and phone number) from the file
         'login.conf'.
         """
-        f = open('login.conf', 'r')
+        f = open('login.conf', 'r') # TODO: exception handling
         self.username = f.readline()
         self.apikey = f.readline()
         self.phonenumber = f.readline()

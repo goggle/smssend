@@ -26,6 +26,9 @@ class Contact:
     def setPhonenumber(self, number):
         self.contact['phonenumber'] = number
 
+    def getContact(self):
+        return self.contact
+
     def sortByName(self):
         self.sortBy = 'name'
 
@@ -80,6 +83,7 @@ class Phonebook:
         self.sortBy = 'forename' 
 
     def printPhonebook(self):
+        print('Sort by: ' + self.sortBy)
         for contact in self.phonebook:
             print('Forename: ' + contact.getForename())
             print('Name: ' + contact.getName())
@@ -96,11 +100,50 @@ class Phonebook:
         for contact in self.phonebook:
             contact.sortByForeame()
 
+    def saveContacts(self):
+        """Saves the phone book to the file 'contacts.csv'.
+
+        """
+        with open('contacts.csv', 'w', newline='') as cfile:
+            writer = csv.DictWriter(cfile, ['forename', 'name', 'phonenumber'], extrasaction='ignore', delimiter=';')
+            for c in self.phonebook:
+                writer.writerow(c.getContact())
+
+
 
     def addContact(self, forename, name, phonenumber):
         """Adds a contact to the phone book.
 
         """
         contact = Contact(forename, name, phonenumber)
+        for c in self.phonebook:
+            compare_value = contact.compare(c)
+            if compare_value == 1: # name and forename already exist in phone book
+                # TODO: raise error
+                return
+            elif compare_value == 2: # phone number already exists in phone book
+                # TODO: raise error
+                return
+
         self.phonebook.append(contact)
-        # TODO: Save the phone book
+        self.phonebook.sort()
+        self.saveContacts()
+
+
+    def delContact(self, forename, name):
+        """Removes a contact from the phone book.
+        If the specified contact is not stored in the phone book, nothing happens.
+
+        """
+        delcontact = Contact(forename, name, '-1')
+        count = 0
+        for c in self.phonebook:
+            compare_value = delcontact.compare(c)
+            if compare_value == 1:
+                del self.phonebook[count]
+            count += 1
+
+        self.saveContacts()
+
+
+
