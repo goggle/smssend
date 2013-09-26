@@ -148,16 +148,23 @@ class SmsConnect:
         payload = {'version':self.version,
                 'timestamp':self.timestamp,
                 'username':self.username,
+                'sender_name':self.phonenumber,
                 'authcode':self.authcode,
                 'section':self.section,
                 'action':'sendSMS',
-                'recipients':recipients_numbers,
+                #'recipients':recipients_numbers,
                 'content':message,
                 'encoding':'UTF-8',
                 'flash':self.boolToInt(flash),
                 'fast':self.boolToInt(fast),
                 'returntype':self.returntype
                 }
+        c = 1
+        for number in recipients_numbers:
+            rec = 'recipients[' + str(c) + ']'
+            payload.update({rec:number})
+            c += 1
+
         if schedule:
             year = str(timesend.year)
             month = str(timesend.month)
@@ -175,9 +182,9 @@ class SmsConnect:
             timesend_string = year + '-' + month + '-' + day + ' ' + hour + ':' + minute
             payload.update({'schedule':1, 'timesend':timesend_string})
 
-        r = requests.post(self.url, payload)
-
         print(payload)
+        r = requests.post(self.url, payload)
+        return r
 
 
     def splitmessage(self, message):
