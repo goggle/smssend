@@ -23,6 +23,9 @@ class SmsConnect:
         else:
             return 0
 
+    def getUsername(self):
+        return self.username
+
 
     def getTimestamp(self):
         ts = int(time.time())
@@ -65,6 +68,7 @@ class SmsConnect:
         self.username = options['username']
         self.apikey = options['apikey']
         self.sendername = options['sendername']
+        # TODO: KeyError exception
 
 
     def getCreditLimit(self):

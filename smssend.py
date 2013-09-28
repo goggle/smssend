@@ -12,6 +12,16 @@ def print_help():
     print('\tc,   contacts  - Show contacts')
 
 def main():
-    print_help()
+    sms = SmsConnect()
+    book = Phonebook()
+
+    # Parse config file and read login data:
+    sms.readLoginData()
+
+    # Retrieve the contacts from the contacts file:
+    book.readContacts()
+
+    print('You are logged in as %s.', sms.getUsername())
+    print('You have %d sms remaining', sms.getCreditLimits())
 
 
