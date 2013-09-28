@@ -9,7 +9,6 @@ class SmsConnect:
     def __init__(self):
         self.url = 'http://api.boxis.net/'
         self.username = ''
-        self.phonenumber = ''
         self.apikey = ''
         self.version = '1.0'
         self.section = 'sms'
@@ -41,14 +40,32 @@ class SmsConnect:
         Reads the login data (username, apikey and phone number) from the file
         'login.conf'.
         """
+        COMMENT_CHAR = '#'
+        OPTION_CHAR = '='
+        options = {}
         f = open('login.conf', 'r') # TODO: exception handling
-        self.username = f.readline()
-        self.apikey = f.readline()
-        self.phonenumber = f.readline()
-        self.username = self.username.strip('\n')
-        self.apikey = self.apikey.strip('\n')
-        self.phonenumber = self.phonenumber.strip('\n')
+        #self.username = f.readline()
+        #self.apikey = f.readline()
+        #self.sendername = f.readline()
+        #self.username = self.username.strip('\n')
+        #self.apikey = self.apikey.strip('\n')
+        #self.sendername = self.sendername.strip('\n')
+        for line in f:
+            line = line.strip('\n')
+            line = line.replace(' ', '')
+            if COMMENT_CHAR in line:
+                line, comment = line.split(COMMENT_CHAR, 1)
+            if OPTION_CHAR in line:
+                option, value = line.split(OPTION_CHAR, 1)
+                #option = option.split()
+                #value = value.split()
+                options[option] = value
+        
         f.close()
+        self.username = options['username']
+        self.apikey = options['apikey']
+        self.sendername = options['sendername']
+
 
     def getCreditLimit(self):
         """Get the available credit (as an integer value).
@@ -149,7 +166,7 @@ class SmsConnect:
         payload = {'version':self.version,
                 'timestamp':self.timestamp,
                 'username':self.username,
-                'sender_name':self.phonenumber,
+                'sender_name':self.sendername,
                 'authcode':self.authcode,
                 'section':self.section,
                 'action':'sendSMS',
