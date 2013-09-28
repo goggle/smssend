@@ -1,4 +1,5 @@
 import csv
+import AddressException
 
 class Contact:
     def __init__(self, forename, name, phonenumber):
@@ -81,6 +82,8 @@ class Phonebook:
     def __init__(self):
         self.phonebook = []
         self.sortBy = 'forename' 
+        self.contactfile = 'contacts.csv'
+        self.readContacts()
 
     def printPhonebook(self):
         print('Sort by: ' + self.sortBy)
@@ -100,15 +103,29 @@ class Phonebook:
         for contact in self.phonebook:
             contact.sortByForeame()
 
-    def saveContacts(self):
-        """Saves the phone book to the file 'contacts.csv'.
+    def readContacts(self):
+        """Read the contacts form the contact file.
 
         """
-        with open('contacts.csv', 'w', newline='') as cfile:
+        # FileNotFoundError
+        with open(self.contactfile, 'r', newline='') as cfile:
+            reader = csv.DictReader(cfile, ['forename', 'name', 'phonenumber'], delimiter=';')
+            for row in reader:
+                forename = row['forename']
+                name = row['name']
+                number = row['phonenumber']
+                self.addContact(forename, name, number)
+
+
+
+    def saveContacts(self):
+        """Saves the phone book to the contact file.
+
+        """
+        with open(contactfile, 'w', newline='') as cfile:
             writer = csv.DictWriter(cfile, ['forename', 'name', 'phonenumber'], extrasaction='ignore', delimiter=';')
             for c in self.phonebook:
                 writer.writerow(c.getContact())
-
 
 
     def addContact(self, forename, name, phonenumber):
@@ -118,11 +135,11 @@ class Phonebook:
         contact = Contact(forename, name, phonenumber)
         for c in self.phonebook:
             compare_value = contact.compare(c)
-            if compare_value == 1: # name and forename already exist in phone book
-                # TODO: raise error
+            if compare_value == 1:
+                raise AddressException('Name and forename already exist in the phone book.')
                 return
-            elif compare_value == 2: # phone number already exists in phone book
-                # TODO: raise error
+            elif compare_value == 2:
+                raise AddressException('Phone number already exists in the phone book.')
                 return
 
         self.phonebook.append(contact)

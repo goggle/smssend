@@ -16,6 +16,7 @@ class SmsConnect:
         self.returntype = 'json'
         self.timestamp = ''
         self.authcode = ''
+        self.sendername = '' # TODO
 
     def boolToInt(self, boolval):
         if boolval:
@@ -100,19 +101,19 @@ class SmsConnect:
             return
 
 
-#    def getSenderNames(self):
-#        self.timestamp = self.getTimestamp()
-#        self.authcode = self.getAuthcode(self.timestamp, self.apikey)
-#        payload = {'version':self.version,
-#                'timestamp':self.timestamp,
-#                'username':self.username,
-#                'authcode':self.authcode,
-#                'section':self.section,
-#                'returntype':self.returntype,
-#                'action':'getSenderNames'
-#                }
-#        r = requests.post(self.url, payload)
-#        return r
+    def getSenderNames(self):
+        self.timestamp = self.getTimestamp()
+        self.authcode = self.getAuthcode(self.timestamp, self.apikey)
+        payload = {'version':self.version,
+                'timestamp':self.timestamp,
+                'username':self.username,
+                'authcode':self.authcode,
+                'section':self.section,
+                'returntype':self.returntype,
+                'action':'getSenderNames'
+                }
+        r = requests.post(self.url, payload)
+        return r
 
 #    def getHistory(self):
 #        self.timestamp = self.getTimestamp()
