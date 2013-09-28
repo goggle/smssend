@@ -1,7 +1,7 @@
 #/usr/bin/env python
 
-import Phonebook
-import SmsConnect
+from SmsConnect import SmsConnect
+from Phonebook import Phonebook
 
 
 def print_help():
@@ -23,5 +23,7 @@ def main():
 
     print('You are logged in as %s.', sms.getUsername())
     print('You have %d sms remaining', sms.getCreditLimits())
+
+main()
 
 
