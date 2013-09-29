@@ -1,4 +1,4 @@
-class AddressException(Exception):
+class ConnectionError(Exception):
     def __init__(self, value):
         self.parameter = value
     
