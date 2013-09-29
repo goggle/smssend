@@ -1,5 +1,5 @@
 import csv
-import AddressException
+from AddressException import AddressException
 
 class Contact:
     def __init__(self, forename, name, phonenumber):
@@ -83,15 +83,15 @@ class Phonebook:
         self.phonebook = []
         self.sortBy = 'forename' 
         self.contactfile = 'contacts.csv'
-        self.readContacts()
 
     def printPhonebook(self):
-        print('Sort by: ' + self.sortBy)
+        #print('Sort by: ' + self.sortBy)
         for contact in self.phonebook:
-            print('Forename: ' + contact.getForename())
-            print('Name: ' + contact.getName())
-            print('Phone number: ' + contact.getPhonenumber())
-            print()
+            #print('Forename: ' + contact.getForename())
+            #print('Name: ' + contact.getName())
+            #print('Phone number: ' + contact.getPhonenumber())
+            #print()
+            print( contact.getForename() + ' ' + contact.getName() + ' (' + contact.getPhonenumber() + ')')
 
     def sortByName(self):
         self.sortBy = 'name'
@@ -107,7 +107,7 @@ class Phonebook:
         """Read the contacts form the contact file.
 
         """
-        # FileNotFoundError
+        # TODO: FileNotFoundError
         with open(self.contactfile, 'r', newline='') as cfile:
             reader = csv.DictReader(cfile, ['forename', 'name', 'phonenumber'], delimiter=';')
             for row in reader:
@@ -122,7 +122,7 @@ class Phonebook:
         """Saves the phone book to the contact file.
 
         """
-        with open(contactfile, 'w', newline='') as cfile:
+        with open(self.contactfile, 'w', newline='') as cfile:
             writer = csv.DictWriter(cfile, ['forename', 'name', 'phonenumber'], extrasaction='ignore', delimiter=';')
             for c in self.phonebook:
                 writer.writerow(c.getContact())
@@ -149,18 +149,22 @@ class Phonebook:
 
     def delContact(self, forename, name):
         """Removes a contact from the phone book.
-        If the specified contact is not stored in the phone book, nothing happens.
+        If the specified contact is not stored in the phone book, raise an exception.
 
         """
         delcontact = Contact(forename, name, '-1')
         count = 0
+        deleted = False
         for c in self.phonebook:
             compare_value = delcontact.compare(c)
             if compare_value == 1:
                 del self.phonebook[count]
+                deleted = True
+                self.saveContacts()
+                break
             count += 1
-
-        self.saveContacts()
+        if deleted == False:
+            raise AddressException('No contact deleted.')
 
 
 

@@ -4,6 +4,7 @@ import hashlib
 import time
 import datetime
 from Phonebook import Contact
+import ConnectionError
 
 class SmsConnect:
     def __init__(self):
@@ -90,7 +91,7 @@ class SmsConnect:
         if int(r.json()['result']) == 1: # success
             return int(r.json()['params']['credit'])
         else: # TODO: error handling
-            return
+            raise ConnectionError('Something went wrong while getting the available credits.')
 
     def calculateCredits(self, message, recipients_count, fast=False):
         """Calculate how many credits you need to send a message. (Returns an integer).
