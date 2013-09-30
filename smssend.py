@@ -77,7 +77,8 @@ def sendSMS(book, smsconnect):
                 break
 
             credits = smsconnect.calculateCredits(message, len(contacts))
-            print('Your message request needs ' + str(credits) + ' credits. Do you want to send it?')
+            print('Your message contain ' + str(len(message)) + ' characters and your reqeust needs ' 
+                    + str(credits) + ' credits. Do you want to send it?')
             answer = input('Y/n > ')
             decision = decide(answer)
             if decision:
