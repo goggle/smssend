@@ -166,5 +166,49 @@ class Phonebook:
         if deleted == False:
             raise AddressException('No contact deleted.')
 
+    def getNameAndNumberList(self):
+        """Get a list of the names ('forename name') and phone numbers from the phone book.
+
+        """
+        names = []
+        numbers = []
+        for c in self.phonebook:
+            forename = c.getForename()
+            name = c.getName()
+            fullname = forename + ' ' + name
+            names.append(fullname)
+            number = c.getPhonenumber()
+            numbers.append(number)
+        return names, numbers
+
+
+    def getContact(self, forename, name):
+        """Retrieves the desired contact from the phone book and raises an AddressException, 
+        if the contact is not part of the phone book.
+
+        """
+        contact = Contact(forename, name, '-1')
+        count = 0
+
+        for c in self.phonebook:
+            compare_value = contact.compare(c)
+            if compare_value == 1:
+                return c
+
+        raise AddressException('Contact is not part of the phone book')
+
+    def getContact(self, fullname):
+        """Retrieves the desired contact from the phone book and raises an AddressException, 
+        if the contact is not part of the phone book.
+
+        """
+        for contact in self.phonebook:
+            cname = contact.getForename() + ' ' + contact.getName()
+            if cname == fullname:
+                return contact
+        raise AddressException('Contact is not part of the phone book')
+                
+
+
 
 
