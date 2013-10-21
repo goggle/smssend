@@ -64,7 +64,7 @@ class SmsConnect:
                 #option = option.split()
                 #value = value.split()
                 options[option] = value
-        
+
         f.close()
         self.username = options['username']
         self.apikey = options['apikey']
@@ -205,7 +205,6 @@ class SmsConnect:
             timesend_string = year + '-' + month + '-' + day + ' ' + hour + ':' + minute
             payload.update({'schedule':1, 'timesend':timesend_string})
 
-        print(payload)
         r = requests.post(self.url, payload)
         return r
 
@@ -224,6 +223,6 @@ class SmsConnect:
             msg = msg[max_len:]
         return msg_list
 
-        
+
 
 

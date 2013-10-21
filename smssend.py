@@ -4,21 +4,23 @@ from SmsConnect import SmsConnect
 from Phonebook import Phonebook
 from AddressException import AddressException
 import readline
+import json
 import sys
 
 
 def print_help():
     print('Available commands:')
     print('\tn,   new       - Compose an SMS')
+    print('\tc,   credits   - Show available credits')
     print('\ta,   add       - Add a new contact')
     print('\td,   del       - Delete a contact')
-    print('\tc,   contacts  - Show contacts')
+    print('\ts,   show      - Show contacts')
     print('\th,   help      - Show this help information')
     print('\tq,   quit      - Quit this program')
 
 def printRemainingSms(smsconnect):
     try:
-        print('You have ' + str(smsconnect.getCreditLimit()) + ' sms remaining.')
+        print('You have ' + str(smsconnect.getCreditLimit()) + ' credits left.')
     except ConnectionError:
         print('Could not get the available credits.')
 
@@ -77,15 +79,24 @@ def sendSMS(book, smsconnect):
                 break
 
             credits = smsconnect.calculateCredits(message, len(contacts))
-            print('Your message contain ' + str(len(message)) + ' characters and your reqeust needs ' 
+            print('Your message contain ' + str(len(message)) + ' characters and your reqeust needs '
                     + str(credits) + ' credits. Do you want to send it?')
             answer = input('Y/n > ')
             decision = decide(answer)
             if decision:
-                smsconnect.sendSms(contacts, message)
-                print('SMS send successfully.')
+                try:
+                    r = smsconnect.sendSms(contacts, message)
+                    if int(r.json()['result']) == 1:
+                        print('SMS send successfully.')
+                    else:
+                        print('Sending SMS failed. No messgae sent.')
+                    break
+                except(ConnectionError):
+                    print('Sending SMS failed. No message sent.')
+                    break
             else:
                 print('No message sent.')
+                break
 
 
 def main():
@@ -113,12 +124,14 @@ def main():
         elif choice in ['n', 'new']:
             sendSMS(book, sms)
 
-
         elif choice in ['q', 'quit', 'exit']:
             break
 
-        elif choice in ['c', 'contacts']:
+        elif choice in ['s', 'show']:
             book.printPhonebook()
+
+        elif choice in ['c', 'credits']:
+            printRemainingSms(sms)
 
         elif choice in ['a', 'add']:
             print('Add a new contact to the phone book.')
@@ -133,8 +146,8 @@ def main():
                 number = number.replace(' ', '')
             except(EOFError, KeyboardInterrupt):
                 print('\nCancel...')
-                continue 
-            
+                continue
+
             try:
                 book.addContact(forename, name, number)
                 print("Contact '" + forename + ' ' + name + "' added to your phone book.")
@@ -163,7 +176,7 @@ def main():
 
 
         else:
-            print("Unknown command! Try 'h' or 'help' to see the available commands")
+            print("Unknown command! Try 'h' or 'help' to see the available commands.")
 
     print('\nGoodbye!')
 
